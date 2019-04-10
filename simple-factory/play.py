@@ -17,8 +17,9 @@ def main(options, args=None):
             print("You must need choose a Pokemon")
             return 2
 
+        print("You summer pokemon: %s" % player_pokemon.name())
+
         while True:
-            print("You summer pokemon: %s" % player_pokemon.name())
             print("input your command: %s" % list(player_pokemon.commands.keys()))
             command = input()
             if not command or command == "exit":
@@ -52,6 +53,29 @@ if __name__ == "__main__":
                          dest="player_name",
                          help="trainer name")
 
-    (options, args) = optParser.parse_args()
+    optParser.add_option("-l",
+                         "--list",
+                         action="store_true", dest="show_list", default=False,
+                         help="list all pokemon ")
 
-    sys.exit(main(options, args))
+    (t_options, t_args) = optParser.parse_args()
+
+    if t_options.show_list:
+        import inspect
+        from pokemons import *
+
+        print("Pokemon List:")
+        print("#############")
+
+        for module_name in sys.modules.keys():
+            if "pokemons." not in module_name:
+                continue
+
+            for name, obj in inspect.getmembers(sys.modules[module_name]):
+                if inspect.isclass(obj) \
+                        and issubclass(obj, Pokemon) \
+                        and obj().name() != "Pokemon":
+                    print(obj().name())
+        sys.exit()
+
+    sys.exit(main(t_options, t_args))
