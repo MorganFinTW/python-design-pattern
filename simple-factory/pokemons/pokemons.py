@@ -37,5 +37,3 @@ class Pokemon:
     def special(self):
         raise NotImplementedError
 
-    def exit(self):
-        raise NotImplementedError
